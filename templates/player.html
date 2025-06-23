@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chord Sync Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 2rem;
+    }
+    #media-container {
+      position: relative;
+      width: 100%;
+    }
+    #media {
+      width: 100%;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #chord-overlay {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6);
+      color: #e74c3c;
+      font-size: 2.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.3rem;
+      pointer-events: none;
+    }
+
+    /* Limit media width to approx 30% of screen on large screens */
+    @media (min-width: 992px) {
+      .media-col {
+        flex: 0 0 30%;
+        max-width: 30%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-5">🎶 Chord Sync Player</h1>
+    <div class="row justify-content-center align-items-start">
+      <div class="col-12 col-md-6 col-lg-4 media-col mb-4">
+        <div id="media-container">
+          {% if ext in ['mp4','mov','avi','mkv'] %}
+            <video id="media" controls>
+              <source src="{{ media_url }}" type="video/{{ ext }}">
+              Your browser does not support HTML5 video.
+            </video>
+          {% else %}
+            <audio id="media" controls class="w-100">
+              <source src="{{ media_url }}" type="audio/{{ ext }}">
+              Your browser does not support HTML5 audio.
+            </audio>
+          {% endif %}
+          <div id="chord-overlay">—</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="d-grid gap-3">
+          <button id="btn-play" class="btn btn-success">Play ▶️</button>
+          <button id="btn-pause" class="btn btn-warning">Pause ⏸️</button>
+          <button id="btn-reset" class="btn btn-danger">Reset ⏹️</button>
+          <a href="/" class="btn btn-link">⬅️ Upload another file</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    fetch('{{ chord_url }}')
+      .then(response => response.json())
+      .then(timeline => {
+        const media = document.getElementById('media');
+        const overlay = document.getElementById('chord-overlay');
+
+        document.getElementById('btn-play').onclick  = () => media.play();
+        document.getElementById('btn-pause').onclick = () => media.pause();
+        document.getElementById('btn-reset').onclick = () => {
+          media.pause();
+          media.currentTime = 0;
+        };
+
+        media.addEventListener('timeupdate', () => {
+          const t = media.currentTime;
+          const entry = timeline.find(e => t >= e.start && t < e.end);
+          overlay.textContent = entry ? entry.label : '–';
+        });
+      })
+      .catch(err => {
+        document.getElementById('chord-overlay').textContent = 'Error';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

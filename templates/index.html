@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Upload Media for Chord Sync</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .upload-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .upload-card {
+      width: 100%;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-section">
+    <div class="card upload-card shadow-sm">
+      <div class="card-body text-center">
+        <h1 class="card-title mb-3">🎶 Chord Sync Uploader</h1>
+        <p class="card-text mb-4 text-muted">Upload an audio or video file to see its chord progression in real time.</p>
+        <form method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <input class="form-control" type="file" name="media" accept="audio/*,video/*" required>
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Upload & Analyze</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted text-center">
+        Supported: .wav, .mp3, .mp4, .mov, .avi, etc.
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
